@@ -48,6 +48,9 @@
 #ifndef ROXLU_BLUR_H
 #define ROXLU_BLUR_H
 
+/* We use the glad GL wrapper, see: https://github.com/Dav1dde/glad */
+#include <glad/glad.h>
+
 #define ROXLU_USE_MATH
 #define ROXLU_USE_OPENGL
 #include <tinylib.h>

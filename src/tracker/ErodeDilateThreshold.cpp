@@ -14,12 +14,11 @@ ErodeDilateThreshold::ErodeDilateThreshold(int w, int h)
   ,threshold_fbo(0)
   ,threshold_tex(0)
 {
-
+#if 1
   GLint viewp[4] = { 0 } ;
   glGetIntegerv(GL_VIEWPORT, viewp);
   win_w = viewp[2];
   win_h = viewp[3];
-
 
   glGenVertexArrays(1, &fullscreen_vao);
 
@@ -47,6 +46,7 @@ ErodeDilateThreshold::ErodeDilateThreshold(int w, int h)
   rx_uniform_1i(threshold_prog, "u_tex", 0);
 
   createFBO(threshold_fbo, threshold_tex);
+#endif
 }
 
 void ErodeDilateThreshold::setThresholdOutputAsReadBuffer() {
@@ -80,6 +80,8 @@ bool ErodeDilateThreshold::createFBO(GLuint& fbo, GLuint& tex) {
     printf("Error: framebuffer is not complete in ErodeDilateThreshold.\n");
     ::exit(EXIT_FAILURE);
   }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   return true;
 }

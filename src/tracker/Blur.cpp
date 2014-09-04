@@ -31,6 +31,7 @@ Blur::~Blur() {
 }
  
 bool Blur::setup(float blurAmount, int texFetches, int sampleSize) {
+
   assert(blurAmount);
   assert(texFetches);
   assert(sampleSize);

@@ -52,6 +52,9 @@
 #ifndef TRACKER_H
 #define TRACKER_H 
 
+/* We use the glad GL wrapper, see: https://github.com/Dav1dde/glad */
+#include <glad/glad.h>
+
 #define ROXLU_USE_FONT
 #define ROXLU_USE_OPENGL
 #include <tinylib.h>

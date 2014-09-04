@@ -11,13 +11,14 @@ Tracker::Tracker(int w, int h, int bgBuffersize)
   ,blobs(w, h)
   ,pbo_toggle(0)
 {
-
+#if 1
   pbos[0] = pbos[1] = 0;
 
   if(!blur.setup(1.0, 10, 1)) {
     printf("Error: cannot setup the blur handler.\n");
     ::exit(EXIT_FAILURE);
   }
+
 
   // PBOs for async read back
   int nbytes = w * h;
@@ -27,6 +28,7 @@ Tracker::Tracker(int w, int h, int bgBuffersize)
   glBindBuffer(GL_PIXEL_PACK_BUFFER, pbos[1]);
   glBufferData(GL_PIXEL_PACK_BUFFER, nbytes, NULL, GL_STREAM_COPY);
   glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+#endif
 }
 
 void Tracker::beginFrame() {
@@ -70,6 +72,10 @@ void Tracker::apply() {
 
   // Perform tracking.
   blobs.track();
+
+  /* Reset defaults. */
+  glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+  glPixelStorei(GL_PACK_ALIGNMENT, 4);
 }
 
 void Tracker::draw() {

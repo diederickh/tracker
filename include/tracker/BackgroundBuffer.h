@@ -47,6 +47,9 @@
 #ifndef TRACKER_BACKGROUND_BUFFER_H
 #define TRACKER_BACKGROUND_BUFFER_H
 
+/* We use the glad GL wrapper, see: https://github.com/Dav1dde/glad */
+#include <glad/glad.h>
+
 #define ROXLU_USE_OPENGL
 #include <tinylib.h>
 #include <vector>

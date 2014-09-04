@@ -46,6 +46,9 @@
 #ifndef TRACKER_ERODE_DILATE_H
 #define TRACKER_ERODE_DILATE_H
 
+/* We use the glad GL wrapper, see: https://github.com/Dav1dde/glad */
+#include <glad/glad.h>
+
 #define ROXLU_USE_OPENGL
 #include <tinylib.h>
 

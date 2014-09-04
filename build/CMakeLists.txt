@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 
-option(OPT_BUILD_DEMO "Build demo" OFF)
-option(OPT_BUILD_LIB "Build lib" OFF)
+option(OPT_BUILD_TRACKER_DEMO "Build demo" OFF)
+option(OPT_BUILD_TRACKER_LIB "Build lib" OFF)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-  project(tracking_debug)
+  project(tracker_debug)
 else()
-  project(tracking)
+  project(tracker)
 endif()
 
-include(Triplet.cmake)
+if ("${extern_lib_dir}" STREQUAL "")
+  include(Triplet.cmake)
+endif()
 
 set(bd ${CMAKE_CURRENT_LIST_DIR}/../)
 
@@ -65,7 +67,7 @@ set(tracker_include_files
   ${bd}/include/tracker/Tracker.h
 )
 
-if (OPT_BUILD_LIB)
+if (OPT_BUILD_TRACKER_LIB)
   add_library(
     ${CMAKE_PROJECT_NAME}
     ${tracker_source_files}
@@ -74,7 +76,7 @@ if (OPT_BUILD_LIB)
   install(FILES ${tracker_include_files} DESTINATION include/tracker/)
 endif()
 
-if (OPT_BUILD_DEMO)
+if (OPT_BUILD_TRACKER_DEMO)
   add_executable(demo ${bd}/src/main.cpp)
   target_link_libraries(demo ${tracker_libs} ${CMAKE_PROJECT_NAME})
   install(TARGETS demo DESTINATION bin)

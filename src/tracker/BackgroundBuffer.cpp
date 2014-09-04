@@ -15,7 +15,7 @@ BackgroundBuffer::BackgroundBuffer(int w, int h, int num)
   ,last_index(0)
   ,out_tex(0)
 {
-
+#if 1
   GLint vp[4] = { 0 };
   glGetIntegerv(GL_VIEWPORT, vp);
   win_w = vp[2];
@@ -26,8 +26,6 @@ BackgroundBuffer::BackgroundBuffer(int w, int h, int num)
     BackgroundFBO buf = createBuffer();
     buffers.push_back(buf);
   }
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   std::stringstream ss;
   float div = 1.0 / num;
@@ -81,6 +79,7 @@ BackgroundBuffer::BackgroundBuffer(int w, int h, int num)
 
   glGenVertexArrays(1, &vao);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 }
 
 BackgroundFBO BackgroundBuffer::createBuffer() {
@@ -103,6 +102,7 @@ BackgroundFBO BackgroundBuffer::createBuffer() {
     ::exit(EXIT_FAILURE);
   }
 
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   return bf;
 }
 
@@ -116,7 +116,6 @@ void BackgroundBuffer::beginFrame() {
 
 void BackgroundBuffer::endFrame() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
   glViewport(0, 0, win_w, win_h);
   ++index %= buffers.size();
 }
