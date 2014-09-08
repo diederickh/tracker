@@ -27,6 +27,10 @@ BackgroundBuffer::BackgroundBuffer(int w, int h, int num)
     buffers.push_back(buf);
   }
 
+  BackgroundFBO bg_fbo = createBuffer();
+  fbo = bg_fbo.fbo;
+  out_tex = bg_fbo.tex;
+
   std::stringstream ss;
   float div = 1.0 / num;
 
@@ -73,10 +77,6 @@ BackgroundBuffer::BackgroundBuffer(int w, int h, int num)
   }
   rx_uniform_1i(prog, "u_last_frame", num);
 
-  BackgroundFBO bg_fbo = createBuffer();
-  fbo = bg_fbo.fbo;
-  out_tex = bg_fbo.tex;
-
   glGenVertexArrays(1, &vao);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
@@ -91,11 +91,14 @@ BackgroundFBO BackgroundBuffer::createBuffer() {
   
   glGenTextures(1, &bf.tex);
   glBindTexture(GL_TEXTURE_2D, bf.tex);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, bf.tex, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bf.tex, 0);
 
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
     printf("Error: framebuffer not complete.\n");
@@ -107,10 +110,11 @@ BackgroundFBO BackgroundBuffer::createBuffer() {
 }
 
 void BackgroundBuffer::beginFrame() {
+  GLenum drawbuffers[] = { GL_COLOR_ATTACHMENT0 } ;
   glBindFramebuffer(GL_FRAMEBUFFER, buffers[index].fbo);
+  glDrawBuffers(1, drawbuffers);
   glViewport(0,0,w,h);
-  GLenum drawbufs[] = { GL_COLOR_ATTACHMENT0 } ;
-  glDrawBuffers(1, drawbufs);
+  glClear(GL_COLOR_BUFFER_BIT); /* not 100% necessary */
   last_index = index;
 }
 
@@ -122,14 +126,11 @@ void BackgroundBuffer::endFrame() {
 
 GLuint BackgroundBuffer::apply() {
 
-  glViewport(0, 0, w, h);
-  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
   GLenum drawbuffers[] = { GL_COLOR_ATTACHMENT0 } ;
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
   glDrawBuffers(1, drawbuffers);
-
+  glViewport(0, 0, w, h);
   glBindVertexArray(vao);
-
   glUseProgram(prog);
 
   for(int i = 0; i < (int)buffers.size(); ++i) {

@@ -19,7 +19,6 @@ Tracker::Tracker(int w, int h, int bgBuffersize)
     ::exit(EXIT_FAILURE);
   }
 
-
   // PBOs for async read back
   int nbytes = w * h;
   glGenBuffers(2, pbos);
